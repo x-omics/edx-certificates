@@ -289,6 +289,7 @@ class CertificateGen(object):
         # a font that has full unicode support.
         for font_file in glob('{0}/fonts/*.ttf'.format(self.template_dir)):
             font_name = os.path.basename(os.path.splitext(font_file)[0])
+            log.info(font_name)
             pdfmetrics.registerFont(TTFont(font_name, font_file))
 
         # 0 0 - normal
@@ -449,6 +450,12 @@ class CertificateGen(object):
         addMapping('OpenSans-Regular', 1, 0, 'OpenSans-Bold')
         addMapping('OpenSans-Regular', 1, 1, 'OpenSans-BoldItalic')
 
+	addMapping('Baoli-Regular', 0, 0, 'Baoli-Regular')
+        styleBaoliRegular = ParagraphStyle(
+            name="baoliregular", leading=10,
+            fontName='Baoli-Regular'
+        )
+
         styleArial = ParagraphStyle(
             name="arial", leading=10,
             fontName='Arial Unicode'
@@ -476,194 +483,282 @@ class CertificateGen(object):
         LEFT_INDENT = 49  # mm from the left side to write the text
         RIGHT_INDENT = 49  # mm from the right side for the CERTIFICATE
 
-        ####### CERTIFICATE
+        # ####### CERTIFICATE
 
-        styleOpenSansLight.fontSize = 19
-        styleOpenSansLight.leading = 10
-        styleOpenSansLight.textColor = colors.Color(
-            0.302, 0.306, 0.318)
-        styleOpenSansLight.alignment = TA_LEFT
+        # styleOpenSansLight.fontSize = 19
+        # styleOpenSansLight.leading = 10
+        # styleOpenSansLight.textColor = colors.Color(
+        #     0.302, 0.306, 0.318)
+        # styleOpenSansLight.alignment = TA_LEFT
 
-        paragraph_string = "CERTIFICATE"
+        # paragraph_string = "CERTIFICATE"
 
-        # Right justified so we compute the width
-        width = stringWidth(
-            paragraph_string,
-            'OpenSans-Light', 19) / mm
-        paragraph = Paragraph("{0}".format(
-            paragraph_string), styleOpenSansLight)
-        paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
-        paragraph.drawOn(c, (WIDTH - RIGHT_INDENT - width) * mm, 163 * mm)
-
-        ####### Issued ..
-
-        styleOpenSansLight.fontSize = 12
-        styleOpenSansLight.leading = 10
-        styleOpenSansLight.textColor = colors.Color(
-            0.302, 0.306, 0.318)
-        styleOpenSansLight.alignment = TA_LEFT
-
-        paragraph_string = "Issued {0}".format(self.issued_date)
-
-        # Right justified so we compute the width
-        width = stringWidth(
-            paragraph_string,
-            'OpenSans-LightItalic', 12) / mm
-        paragraph = Paragraph("<i>{0}</i>".format(
-            paragraph_string), styleOpenSansLight)
-        paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
-        paragraph.drawOn(c, (WIDTH - RIGHT_INDENT - width) * mm, 155 * mm)
-
-        ####### This is to certify..
-
-        styleOpenSansLight.fontSize = 12
-        styleOpenSansLight.leading = 10
-        styleOpenSansLight.textColor = colors.Color(
-            0.302, 0.306, 0.318)
-        styleOpenSansLight.alignment = TA_LEFT
-
-        paragraph_string = "This is to certify that"
-        paragraph = Paragraph(paragraph_string, styleOpenSansLight)
-        paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
-        paragraph.drawOn(c, LEFT_INDENT * mm, 132.5 * mm)
-
-        #######  Student name
-
-        # default is to use the DejaVu font for the name,
-        # will fall back to Arial if there are
-        # unusual characters
-        style = styleOpenSans
-        style.leading = 10
-        width = stringWidth(
-            student_name.decode('utf-8'),
-            'OpenSans-Bold', 34) / mm
-        paragraph_string = "<b>{0}</b>".format(student_name)
-
-        if self._use_unicode_font(student_name):
-            style = styleArial
-            width = stringWidth(student_name.decode('utf-8'),
-                                'Arial Unicode', 34) / mm
-            # There is no bold styling for Arial :(
-            paragraph_string = "{0}".format(student_name)
-
-        # We will wrap at 200mm in, so if we reach the end (200-47)
-        # decrease the font size
-        if width > 153:
-            style.fontSize = 18
-            nameYOffset = 121.5
-        else:
-            style.fontSize = 34
-            nameYOffset = 124.5
-
-        style.textColor = colors.Color(
-            0, 0.624, 0.886)
-        style.alignment = TA_LEFT
-
-        paragraph = Paragraph(paragraph_string, style)
-        paragraph.wrapOn(c, 200 * mm, 214 * mm)
-        paragraph.drawOn(c, LEFT_INDENT * mm, nameYOffset * mm)
-
-        ####### Successfully completed
-
-        styleOpenSansLight.fontSize = 12
-        styleOpenSansLight.leading = 10
-        styleOpenSansLight.textColor = colors.Color(
-            0.302, 0.306, 0.318)
-        styleOpenSansLight.alignment = TA_LEFT
-
-        paragraph_string = "successfully completed"
-        if '7.00x' in self.course:
-            paragraph_string = "successfully completed the inaugural offering of"
-        else:
-            paragraph_string = "successfully completed"
-
-        paragraph = Paragraph(paragraph_string, styleOpenSansLight)
-
-        paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
-        paragraph.drawOn(c, LEFT_INDENT * mm, 108 * mm)
-
-        ###### Course name
-
-        #styleOpenSans.fontName = 'OpenSans-BoldItalic'
-        if 'PH207x' in self.course:
-            styleOpenSans.fontSize = 18
-            styleOpenSans.leading = 21
-        elif '4.01x' in self.course:
-            styleOpenSans.fontSize = 20
-            styleOpenSans.leading = 10
-        elif 'Stat2.1x' in self.course:
-            styleOpenSans.fontSize = 20
-            styleOpenSans.leading = 10
-        elif 'CS191x' in self.course:
-            styleOpenSans.fontSize = 20
-            styleOpenSans.leading = 10
-        elif '6.00x' in self.course:
-            styleOpenSans.fontSize = 20
-            styleOpenSans.leading = 21
-        elif 'PH278x' in self.course:
-            styleOpenSans.fontSize = 20
-            styleOpenSans.leading = 10
-        else:
-            styleOpenSans.fontSize = 24
-            styleOpenSans.leading = 10
-        styleOpenSans.textColor = colors.Color(
-            0, 0.624, 0.886)
-        styleOpenSans.alignment = TA_LEFT
-
-        paragraph_string = "<b><i>{0}: {1}</i></b>".format(
-            self.course, self.long_course)
-        paragraph = Paragraph(paragraph_string, styleOpenSans)
+        # # Right justified so we compute the width
+        # width = stringWidth(
+        #     paragraph_string,
+        #     'OpenSans-Light', 19) / mm
+        # paragraph = Paragraph("{0}".format(
+        #     paragraph_string), styleOpenSansLight)
         # paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
-        if 'PH207x' in self.course:
-            paragraph.wrapOn(c, 180 * mm, HEIGHT * mm)
-            paragraph.drawOn(c, LEFT_INDENT * mm, 91 * mm)
-        elif '6.00x' in self.course:
-            paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
-            paragraph.drawOn(c, LEFT_INDENT * mm, 95 * mm)
-        else:
-            paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
-            paragraph.drawOn(c, LEFT_INDENT * mm, 99 * mm)
+        # paragraph.drawOn(c, (WIDTH - RIGHT_INDENT - width) * mm, 163 * mm)
 
-        ###### A course of study..
+        # ####### Issued ..
 
-        styleOpenSansLight.fontSize = 12
-        styleOpenSansLight.textColor = colors.Color(
-            0.302, 0.306, 0.318)
-        styleOpenSansLight.alignment = TA_LEFT
+        # styleOpenSansLight.fontSize = 12
+        # styleOpenSansLight.leading = 10
+        # styleOpenSansLight.textColor = colors.Color(
+        #     0.302, 0.306, 0.318)
+        # styleOpenSansLight.alignment = TA_LEFT
 
-        paragraph_string = "a course of study offered by <b>{0}</b>" \
-                           ", an online learning<br /><br />initiative of " \
-                           "<b>{1}</b> through <b>edX</b>.".format(
-                               self.org, self.long_org)
+        # paragraph_string = "Issued {0}".format(self.issued_date)
 
-        paragraph = Paragraph(paragraph_string, styleOpenSansLight)
-        paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
-        paragraph.drawOn(c, LEFT_INDENT * mm, 78 * mm)
+        # # Right justified so we compute the width
+        # width = stringWidth(
+        #     paragraph_string,
+        #     'OpenSans-LightItalic', 12) / mm
+        # paragraph = Paragraph("<i>{0}</i>".format(
+        #     paragraph_string), styleOpenSansLight)
+        # paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
+        # paragraph.drawOn(c, (WIDTH - RIGHT_INDENT - width) * mm, 155 * mm)
 
-        ###### Honor code
+        # ####### This is to certify..
 
-        styleOpenSansLight.fontSize = 7
-        styleOpenSansLight.leading = 10
-        styleOpenSansLight.textColor = colors.Color(
-            0.302, 0.306, 0.318)
-        styleOpenSansLight.alignment = TA_CENTER
+        # styleOpenSansLight.fontSize = 12
+        # styleOpenSansLight.leading = 10
+        # styleOpenSansLight.textColor = colors.Color(
+        #     0.302, 0.306, 0.318)
+        # styleOpenSansLight.alignment = TA_LEFT
 
-        paragraph_string = "HONOR CODE CERTIFICATE<br/>" \
-            "*Authenticity of this certificate can be verified at " \
-            "<a href='{verify_url}/{verify_path}/{verify_uuid}'>" \
-            "{verify_url}/{verify_path}/{verify_uuid}</a>"
+        # paragraph_string = "This is to certify that"
+        # paragraph = Paragraph(paragraph_string, styleOpenSansLight)
+        # paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
+        # paragraph.drawOn(c, LEFT_INDENT * mm, 132.5 * mm)
 
-        paragraph_string = paragraph_string.format(
-            verify_url=settings.CERT_VERIFY_URL,
-            verify_path=S3_VERIFY_PATH,
-            verify_uuid=verify_uuid
-        )
-        paragraph = Paragraph(paragraph_string, styleOpenSansLight)
+        # #######  Student name
 
-        paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
-        paragraph.drawOn(c, 0 * mm, 28 * mm)
+        # # default is to use the DejaVu font for the name,
+        # # will fall back to Arial if there are
+        # # unusual characters
+        # style = styleOpenSans
+        # style.leading = 10
+        # width = stringWidth(
+        #     student_name.decode('utf-8'),
+        #     'OpenSans-Bold', 34) / mm
+        # paragraph_string = "<b>{0}</b>".format(student_name)
+
+        # if self._use_unicode_font(student_name):
+        #     style = styleArial
+        #     width = stringWidth(student_name.decode('utf-8'),
+        #                         'Arial Unicode', 34) / mm
+        #     # There is no bold styling for Arial :(
+        #     paragraph_string = "{0}".format(student_name)
+
+        # # We will wrap at 200mm in, so if we reach the end (200-47)
+        # # decrease the font size
+        # if width > 153:
+        #     style.fontSize = 18
+        #     nameYOffset = 121.5
+        # else:
+        #     style.fontSize = 34
+        #     nameYOffset = 124.5
+
+        # style.textColor = colors.Color(
+        #     0, 0.624, 0.886)
+        # style.alignment = TA_LEFT
+
+        # paragraph = Paragraph(paragraph_string, style)
+        # paragraph.wrapOn(c, 200 * mm, 214 * mm)
+        # paragraph.drawOn(c, LEFT_INDENT * mm, nameYOffset * mm)
+
+        # ####### Successfully completed
+
+        # styleOpenSansLight.fontSize = 12
+        # styleOpenSansLight.leading = 10
+        # styleOpenSansLight.textColor = colors.Color(
+        #     0.302, 0.306, 0.318)
+        # styleOpenSansLight.alignment = TA_LEFT
+
+        # paragraph_string = "successfully completed"
+        # if '7.00x' in self.course:
+        #     paragraph_string = "successfully completed the inaugural offering of"
+        # else:
+        #     paragraph_string = "successfully completed"
+
+        # paragraph = Paragraph(paragraph_string, styleOpenSansLight)
+
+        # paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
+        # paragraph.drawOn(c, LEFT_INDENT * mm, 108 * mm)
+
+        # ###### Course name
+
+        # #styleOpenSans.fontName = 'OpenSans-BoldItalic'
+        # if 'PH207x' in self.course:
+        #     styleOpenSans.fontSize = 18
+        #     styleOpenSans.leading = 21
+        # elif '4.01x' in self.course:
+        #     styleOpenSans.fontSize = 20
+        #     styleOpenSans.leading = 10
+        # elif 'Stat2.1x' in self.course:
+        #     styleOpenSans.fontSize = 20
+        #     styleOpenSans.leading = 10
+        # elif 'CS191x' in self.course:
+        #     styleOpenSans.fontSize = 20
+        #     styleOpenSans.leading = 10
+        # elif '6.00x' in self.course:
+        #     styleOpenSans.fontSize = 20
+        #     styleOpenSans.leading = 21
+        # elif 'PH278x' in self.course:
+        #     styleOpenSans.fontSize = 20
+        #     styleOpenSans.leading = 10
+        # else:
+        #     styleOpenSans.fontSize = 24
+        #     styleOpenSans.leading = 10
+        # styleOpenSans.textColor = colors.Color(
+        #     0, 0.624, 0.886)
+        # styleOpenSans.alignment = TA_LEFT
+
+        # paragraph_string = "<b><i>{0}: {1}</i></b>".format(
+        #     self.course, self.long_course)
+        # paragraph = Paragraph(paragraph_string, styleOpenSans)
+        # # paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
+        # if 'PH207x' in self.course:
+        #     paragraph.wrapOn(c, 180 * mm, HEIGHT * mm)
+        #     paragraph.drawOn(c, LEFT_INDENT * mm, 91 * mm)
+        # elif '6.00x' in self.course:
+        #     paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
+        #     paragraph.drawOn(c, LEFT_INDENT * mm, 95 * mm)
+        # else:
+        #     paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
+        #     paragraph.drawOn(c, LEFT_INDENT * mm, 99 * mm)
+
+        # ###### A course of study..
+
+        # styleOpenSansLight.fontSize = 12
+        # styleOpenSansLight.textColor = colors.Color(
+        #     0.302, 0.306, 0.318)
+        # styleOpenSansLight.alignment = TA_LEFT
+
+        # paragraph_string = "a course of study offered by <b>{0}</b>" \
+        #                    ", an online learning<br /><br />initiative of " \
+        #                    "<b>{1}</b> through <b>edX</b>.".format(
+        #                        self.org, self.long_org)
+
+        # paragraph = Paragraph(paragraph_string, styleOpenSansLight)
+        # paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
+        # paragraph.drawOn(c, LEFT_INDENT * mm, 78 * mm)
+
+        # ###### Honor code
+
+        # styleOpenSansLight.fontSize = 7
+        # styleOpenSansLight.leading = 10
+        # styleOpenSansLight.textColor = colors.Color(
+        #     0.302, 0.306, 0.318)
+        # styleOpenSansLight.alignment = TA_CENTER
+
+        # paragraph_string = "HONOR CODE CERTIFICATE<br/>" \
+        #     "*Authenticity of this certificate can be verified at " \
+        #     "<a href='{verify_url}/{verify_path}/{verify_uuid}'>" \
+        #     "{verify_url}/{verify_path}/{verify_uuid}</a>"
+
+        # paragraph_string = paragraph_string.format(
+        #     verify_url=settings.CERT_VERIFY_URL,
+        #     verify_path=S3_VERIFY_PATH,
+        #     verify_uuid=verify_uuid
+        # )
+        # paragraph = Paragraph(paragraph_string, styleOpenSansLight)
+
+        # paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
+        # paragraph.drawOn(c, 0 * mm, 28 * mm)
 
         ########
+        ###### Chinese..
+        style = styleBaoliRegular
+        style.leading = 10
+        style.fontSize = 20
+        style.textColor = colors.Color(
+            0.302, 0.306, 0.318)
+        style.alignment = TA_LEFT
+        paragraph_string_stu = "{0}".format(student_name.decode('utf-8'))
+        paragraph_string_course = "《{0}》".format(self.long_course.decode('utf-8'))
+        paragraph_string_course = u"《这是九个中文占位字》"
+        paragraph_string_1 = "成功完成华大基因提供的"
+        paragraph_string_2 = "课程的学习，并满足结课要求。" 
+        paragraph_string_3 = "特发此证！"
+       
+        width_stu = stringWidth(student_name.decode('utf-8'),
+                                'Baoli-Regular', 20) / mm
+        width_course = stringWidth(paragraph_string_course,
+                                'Baoli-Regular', 20) / mm
+        width_ch = stringWidth(u'《这就是十个中文占位符》',
+                                'Baoli-Regular', 20) / mm
+        width_en = stringWidth('abcdefghijkl',
+                                'Baoli-Regular', 20) / mm
+        width_word = stringWidth(u'一二',
+                                'Baoli-Regular', 20) / mm 
+        width_string_1 = stringWidth(paragraph_string_1,
+                                'Baoli-Regular', 20) / mm
+        width_string_2= stringWidth(paragraph_string_2,
+                                'Baoli-Regular', 20) / mm
+        width_string_3 = stringWidth(paragraph_string_3,
+                                'Baoli-Regular', 20) / mm  
+        log.info(width_stu)
+        log.info(width_course)
+        log.info(width_ch)
+        log.info(width_en)
+        log.info(width_word)
+        log.info(WIDTH - RIGHT_INDENT - LEFT_INDENT - width_word - width_en - width_string_1 - width_ch)
+	paragraph = Paragraph(paragraph_string_stu, style)
+        paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
+        paragraph.drawOn(c, (LEFT_INDENT + width_word) * mm, 125 * mm)
+
+        paragraph = Paragraph(paragraph_string_1, style)
+        paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
+        paragraph.drawOn(c, (LEFT_INDENT + width_word + width_en) * mm, 125 * mm)
+        
+	if width_course > width_ch:
+	    style.fontSize = 14
+            nameYOffset = 123.5
+        else:
+            style.fontSize = 20
+            nameYOffset = 125
+        paragraph = Paragraph(paragraph_string_course, style)
+        paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
+        paragraph.drawOn(c, (LEFT_INDENT + width_en + width_word + width_string_1) * mm, nameYOffset * mm)
+        
+        style.fontSize = 20
+        paragraph = Paragraph(paragraph_string_2, style)
+        paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
+        paragraph.drawOn(c, LEFT_INDENT * mm, 117 * mm)
+
+        paragraph = Paragraph(paragraph_string_3, style)
+        paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
+        paragraph.drawOn(c, (LEFT_INDENT + width_word) * mm, 107 * mm)
+        ###### English..
+        log.info(style)
+        style = styleOpenSans
+        style.leading = 10
+        #if self._use_unicode_font(student_name):
+        #    style = styleArial
+
+        style.fontSize = 14
+        style.textColor = colors.Color(
+            0.302, 0.306, 0.318)
+        style.alignment = TA_LEFT  
+
+        paragraph_string = "This is to certify that Mr./Ms. <b>{0}</b>" \
+                           " has successfully completed all course <br /><br />requirements for " \
+                           "<b><i>{1}: {2}</i></b>".format(
+                               student_name.decode('utf-8'), 
+                               self.course, 
+                               self.long_course
+                               )
+       # width = stringWidth(paragraph_string,
+       #                         'Arial Unicode', 14) / mm
+        paragraph = Paragraph(paragraph_string, style)
+        paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
+        paragraph.drawOn(c, LEFT_INDENT * mm, 80 * mm)
+
+
 
         c.showPage()
         c.save()
@@ -1308,3 +1403,4 @@ class CertificateGen(object):
         #I believe chinese characters are 0x4e00 to 0x9fff
         # Japanese kanji seem to be >= 0x3000
         return self._contains_characters_above(string, 0x0500)
+
