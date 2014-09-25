@@ -707,7 +707,11 @@ class CertificateGen(object):
         log.info(width_en)
         log.info(width_word)
         log.info(WIDTH - RIGHT_INDENT - LEFT_INDENT - width_word - width_en - width_string_1 - width_ch)
-	paragraph = Paragraph(paragraph_string_stu, style)
+        
+        if width_stu > width_en:
+            style.fontSize = 14
+        paragraph = Paragraph(paragraph_string_stu, style)
+        style.fontSize = 20
         paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
         paragraph.drawOn(c, (LEFT_INDENT + width_word) * mm, 125 * mm)
 
