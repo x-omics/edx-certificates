@@ -680,7 +680,7 @@ class CertificateGen(object):
         style.alignment = TA_LEFT
         paragraph_string_stu = "{0}".format(student_name.decode('utf-8'))
         paragraph_string_course = "《{0}》".format(self.long_course.decode('utf-8'))
-        paragraph_string_course = u"《这是九个中文占位字》"
+#       paragraph_string_course = u"《这是九个中文占位字》"
         paragraph_string_1 = "成功完成华大基因提供的"
         paragraph_string_2 = "课程的学习，并满足结课要求。" 
         paragraph_string_3 = "特发此证！"
