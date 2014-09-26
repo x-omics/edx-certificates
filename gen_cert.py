@@ -680,10 +680,11 @@ class CertificateGen(object):
         style.alignment = TA_LEFT
 
         style_stu = styleOpenSans
+        style_stu.fontSize = 14
         if self._use_unicode_font(student_name):
             style_stu=styleBaoliRegular
+            style_stu.fontSize = 20
         style_stu.leading = 10
-        style_stu.fontSize = 14
         style_stu.textColor = colors.Color(
             0.302, 0.306, 0.318)
         style_stu.alignment = TA_LEFT
