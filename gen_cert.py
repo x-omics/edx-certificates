@@ -681,7 +681,7 @@ class CertificateGen(object):
 
         style_stu = styleOpenSans
         style_stu.leading = 10
-        style_stu.fontSize = 20
+        style_stu.fontSize = 14
         style_stu.textColor = colors.Color(
             0.302, 0.306, 0.318)
         style_stu.alignment = TA_LEFT
