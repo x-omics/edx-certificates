@@ -678,6 +678,14 @@ class CertificateGen(object):
         style.textColor = colors.Color(
             0.302, 0.306, 0.318)
         style.alignment = TA_LEFT
+
+        style_stu = styleOpenSans
+        style_stu.leading = 10
+        style_stu.fontSize = 20
+        style_stu.textColor = colors.Color(
+            0.302, 0.306, 0.318)
+        style_stu.alignment = TA_LEFT
+        
         paragraph_string_stu = "{0}".format(student_name.decode('utf-8'))
         paragraph_string_course = "《{0}》".format(self.long_course.decode('utf-8'))
 #       paragraph_string_course = u"《这是九个中文占位字》"
@@ -701,16 +709,8 @@ class CertificateGen(object):
                                 'Baoli-Regular', 20) / mm
         width_string_3 = stringWidth(paragraph_string_3,
                                 'Baoli-Regular', 20) / mm  
-        log.info(width_stu)
-        log.info(width_course)
-        log.info(width_ch)
-        log.info(width_en)
-        log.info(width_word)
-        log.info(WIDTH - RIGHT_INDENT - LEFT_INDENT - width_word - width_en - width_string_1 - width_ch)
-        
-        if width_stu > width_en:
-            style.fontSize = 16
-        paragraph = Paragraph(paragraph_string_stu, style)
+
+        paragraph = Paragraph(paragraph_string_stu, style_stu)
         style.fontSize = 20
         paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
         paragraph.drawOn(c, (LEFT_INDENT + width_word) * mm, 125 * mm)
@@ -738,7 +738,6 @@ class CertificateGen(object):
         paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
         paragraph.drawOn(c, (LEFT_INDENT + width_word) * mm, 107 * mm)
         ###### English..
-        log.info(style)
         style = styleOpenSans
         style.leading = 10
         #if self._use_unicode_font(student_name):
