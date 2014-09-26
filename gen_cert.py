@@ -680,6 +680,8 @@ class CertificateGen(object):
         style.alignment = TA_LEFT
 
         style_stu = styleOpenSans
+        if self._use_unicode_font(student_name):
+            style_stu=styleBaoliRegular
         style_stu.leading = 10
         style_stu.fontSize = 14
         style_stu.textColor = colors.Color(
@@ -711,7 +713,6 @@ class CertificateGen(object):
                                 'Baoli-Regular', 20) / mm  
 
         paragraph = Paragraph(paragraph_string_stu, style_stu)
-        style.fontSize = 20
         paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
         paragraph.drawOn(c, (LEFT_INDENT + width_word) * mm, 125 * mm)
 
