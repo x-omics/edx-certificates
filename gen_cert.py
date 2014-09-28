@@ -166,8 +166,8 @@ class CertificateGen(object):
             self.template_pdf = PdfFileReader(file(
                 os.path.join(
                     template_path,
-                    "certificate-template-{}-{}.pdf".format(
-                    course_id.split('/')[0], course_id.split('/')[1])), "rb"))
+                    "certificate-template-{}.pdf".format(
+                    course_id.split('/')[0])), "rb"))
 
         # Open the 188 letterhead pdf
         # if it exists
