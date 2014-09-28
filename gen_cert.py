@@ -689,8 +689,8 @@ class CertificateGen(object):
             0.302, 0.306, 0.318)
         style_stu.alignment = TA_LEFT
         
-        paragraph_string_stu = "{0}".format(student_name.decode('utf-8'))
-        paragraph_string_course = "《{0}》".format(self.long_course.decode('utf-8'))
+        paragraph_string_stu = "{0}".format(student_name)
+        paragraph_string_course = "《{0}》".format(self.long_course)
 #       paragraph_string_course = u"《这是九个中文占位字》"
         paragraph_string_1 = "成功完成华大基因提供的幕序在线课程"
         paragraph_string_2 = "的学习，并满足结课要求。" 
@@ -713,7 +713,7 @@ class CertificateGen(object):
         width_string_3 = stringWidth(paragraph_string_3,
                                 'Baoli-Regular', 20) / mm  
         #stuname
-        paragraph = Paragraph(paragraph_string_stu, style_stu)
+        paragraph = Paragraph(paragraph_string_stu.decode('utf-8'), style_stu)
         paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
         paragraph.drawOn(c, (LEFT_INDENT + width_word) * mm, 125 * mm)
         #成功完成华大基因提供的幕序在线课程
@@ -721,7 +721,7 @@ class CertificateGen(object):
         paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
         paragraph.drawOn(c, (LEFT_INDENT + width_word + width_en) * mm, 125 * mm)
         #string_course
-        paragraph = Paragraph(paragraph_string_course, style)
+        paragraph = Paragraph(paragraph_string_course.decode('utf-8'), style)
         paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
         paragraph.drawOn(c, LEFT_INDENT * mm, 117 * mm)
         #的学习，并满足结课要求
@@ -741,19 +741,11 @@ class CertificateGen(object):
             0.302, 0.306, 0.318)
         style_en.alignment = TA_LEFT  
 
-        paragraph_string = "This is to certify that Mr./Ms. <b>{0}</b>" \
-                           " has successfully completed all <br /><br />requirements of " \
-                           "<b><i>{1}: {2}</i></b>".format(
-                               student_name.decode('utf-8'), 
-                               self.course, 
-                               self.long_course
-                               )
-
         paragraph_string_en_1 = "This is to certify that Mr./Ms. "
-        paragraph_string_en_stu = "<b>{0}</b>".format(student_name.decode('utf-8'))
+        paragraph_string_en_stu = "<b>{0}</b>".format(student_name)
         paragraph_string_en_2 = " has successfully completed all requirements"
         paragraph_string_en_3 = "of the online course:"
-        paragraph_string_en_course = "{0}".format(self.long_course.decode('utf-8'))
+        paragraph_string_en_course = "{0}".format(self.long_course)
         width_string_en_1 = stringWidth(paragraph_string_en_1,
                                         'OpenSans-Regular', 14) / mm
         width_string_en_stu = stringWidth(paragraph_string_en_stu,
@@ -772,9 +764,9 @@ class CertificateGen(object):
         paragraph.drawOn(c, LEFT_INDENT * mm, 80 * mm)
 
 
-        paragraph = Paragraph(paragraph_string_en_stu, style_en)
+        paragraph = Paragraph(paragraph_string_en_stu.decode('utf-8'), style_en)
         if self._use_unicode_font(student_name):
-            paragraph = Paragraph(paragraph_string_en_stu, style)
+            paragraph = Paragraph(paragraph_string_en_stu.decode('utf-8'), style)
         paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
         paragraph.drawOn(c, (LEFT_INDENT + width_string_en_1) * mm, 80 * mm)
 
@@ -789,7 +781,7 @@ class CertificateGen(object):
         paragraph.drawOn(c, LEFT_INDENT * mm, 70 * mm)
 
         #
-        paragraph = Paragraph(paragraph_string_en_course, style_en)
+        paragraph = Paragraph(paragraph_string_en_course.decode('utf-8'), style)
         paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
         paragraph.drawOn(c, (LEFT_INDENT + width_string_en_3) * mm, 70 * mm)
 
