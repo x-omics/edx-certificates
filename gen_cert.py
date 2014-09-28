@@ -681,9 +681,11 @@ class CertificateGen(object):
 
         style_stu = styleOpenSans
         style_stu.fontSize = 14
+        nameYOffset = 123.5 
         if self._use_unicode_font(student_name):
             style_stu=styleBaoliRegular
             style_stu.fontSize = 20
+            nameYOffset = 125
         style_stu.leading = 10
         style_stu.textColor = colors.Color(
             0.302, 0.306, 0.318)
@@ -715,7 +717,7 @@ class CertificateGen(object):
         #stuname
         paragraph = Paragraph(paragraph_string_stu.decode('utf-8'), style_stu)
         paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
-        paragraph.drawOn(c, (LEFT_INDENT + width_word) * mm, 125 * mm)
+        paragraph.drawOn(c, (LEFT_INDENT + width_word) * mm, nameYOffset * mm)
         #成功完成华大基因提供的幕序在线课程
         paragraph = Paragraph(paragraph_string_1, style)
         paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
@@ -743,21 +745,22 @@ class CertificateGen(object):
 
         paragraph_string_en_1 = "This is to certify that Mr./Ms. "
         paragraph_string_en_stu = "<b>{0}</b>".format(student_name)
-        paragraph_string_en_2 = " has successfully completed all requirements"
-        paragraph_string_en_3 = "of the online course:"
-        paragraph_string_en_course = "{0}".format(self.long_course)
+        paragraph_string_en_2 = " has successfully completed all"
+        paragraph_string_en_3 = "requirements of the online course: "
+        paragraph_string_en_course = " {0}".format(self.long_course)
         width_string_en_1 = stringWidth(paragraph_string_en_1,
-                                        'OpenSans-Regular', 14) / mm
-        width_string_en_stu = stringWidth(paragraph_string_en_stu,
-                                          'OpenSans-Regular', 14) / mm
+                                        'OpenSans-Bold', 14) / mm
+        width_string_en_stu = stringWidth(student_name.decode('utf-8'),
+                                          'OpenSans-Bold', 14) / mm
         if self._use_unicode_font(student_name):
-            width_string_en_stu = stringWidth(paragraph_string_en_stu,
+            width_string_en_stu = stringWidth(student_name.decode('utf-8'),
                                               'Baoli-Regular', 20) / mm            
         width_string_en_2 = stringWidth(paragraph_string_en_2,
                                         'OpenSans-Regular', 14) / mm
         width_string_en_3 = stringWidth(paragraph_string_en_3,
                                         'OpenSans-Regular', 14) / mm
-
+        width_en = stringWidth('abcdefghijklmnopq',
+                               'OpenSans-Bold', 14) / mm
         #This is to certify that Mr./Ms.
         paragraph = Paragraph(paragraph_string_en_1, style_en)
         paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
@@ -773,7 +776,7 @@ class CertificateGen(object):
         #has successfully completed all requirements
         paragraph = Paragraph(paragraph_string_en_2, style_en)
         paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
-        paragraph.drawOn(c, (LEFT_INDENT + width_string_en_1 + width_string_en_stu) * mm, 80 * mm)
+        paragraph.drawOn(c, (LEFT_INDENT + width_string_en_1 + width_en) * mm, 80 * mm)
 
         #of the online course:
         paragraph = Paragraph(paragraph_string_en_3, style_en)
@@ -783,7 +786,7 @@ class CertificateGen(object):
         #
         paragraph = Paragraph(paragraph_string_en_course.decode('utf-8'), style)
         paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
-        paragraph.drawOn(c, (LEFT_INDENT + width_string_en_3) * mm, 70 * mm)
+        paragraph.drawOn(c, (LEFT_INDENT + width_string_en_3) * mm, 71.5 * mm)
 
         c.showPage()
         c.save()
