@@ -692,8 +692,8 @@ class CertificateGen(object):
         paragraph_string_stu = "{0}".format(student_name.decode('utf-8'))
         paragraph_string_course = "《{0}》".format(self.long_course.decode('utf-8'))
 #       paragraph_string_course = u"《这是九个中文占位字》"
-        paragraph_string_1 = "成功完成华大基因提供的"
-        paragraph_string_2 = "课程的学习，并满足结课要求。" 
+        paragraph_string_1 = "成功完成华大基因提供的幕序在线课程"
+        paragraph_string_2 = "的学习，并满足结课要求。" 
         paragraph_string_3 = "特发此证！"
        
         width_stu = stringWidth(student_name.decode('utf-8'),
@@ -712,58 +712,86 @@ class CertificateGen(object):
                                 'Baoli-Regular', 20) / mm
         width_string_3 = stringWidth(paragraph_string_3,
                                 'Baoli-Regular', 20) / mm  
-
+        #stuname
         paragraph = Paragraph(paragraph_string_stu, style_stu)
         paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
         paragraph.drawOn(c, (LEFT_INDENT + width_word) * mm, 125 * mm)
-
+        #成功完成华大基因提供的幕序在线课程
         paragraph = Paragraph(paragraph_string_1, style)
         paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
         paragraph.drawOn(c, (LEFT_INDENT + width_word + width_en) * mm, 125 * mm)
-        
-	if width_course > width_ch:
-	    style.fontSize = 14
-            nameYOffset = 123.5
-        else:
-            style.fontSize = 20
-            nameYOffset = 125
+        #string_course
         paragraph = Paragraph(paragraph_string_course, style)
         paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
-        paragraph.drawOn(c, (LEFT_INDENT + width_en + width_word + width_string_1) * mm, nameYOffset * mm)
-        
-        style.fontSize = 20
+        paragraph.drawOn(c, LEFT_INDENT * mm, 117 * mm)
+        #的学习，并满足结课要求
         paragraph = Paragraph(paragraph_string_2, style)
         paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
-        paragraph.drawOn(c, LEFT_INDENT * mm, 117 * mm)
-
+        paragraph.drawOn(c, (LEFT_INDENT + width_course)  * mm, 117 * mm)
+        #特发此证
         paragraph = Paragraph(paragraph_string_3, style)
         paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
         paragraph.drawOn(c, (LEFT_INDENT + width_word) * mm, 107 * mm)
-        ###### English..
-        style = styleOpenSans
-        style.leading = 10
-        #if self._use_unicode_font(student_name):
-        #    style = styleArial
 
-        style.fontSize = 14
-        style.textColor = colors.Color(
+        ###### English..
+        style_en = styleOpenSans
+        style_en.leading = 10
+        style_en.fontSize = 14
+        style_en.textColor = colors.Color(
             0.302, 0.306, 0.318)
-        style.alignment = TA_LEFT  
+        style_en.alignment = TA_LEFT  
 
         paragraph_string = "This is to certify that Mr./Ms. <b>{0}</b>" \
-                           " has successfully completed all course <br /><br />requirements for " \
+                           " has successfully completed all <br /><br />requirements of " \
                            "<b><i>{1}: {2}</i></b>".format(
                                student_name.decode('utf-8'), 
                                self.course, 
                                self.long_course
                                )
-       # width = stringWidth(paragraph_string,
-       #                         'Arial Unicode', 14) / mm
-        paragraph = Paragraph(paragraph_string, style)
+
+        paragraph_string_en_1 = "This is to certify that Mr./Ms. "
+        paragraph_string_en_stu = "<b>{0}</b>".format(student_name.decode('utf-8'))
+        paragraph_string_en_2 = " has successfully completed all requirements"
+        paragraph_string_en_3 = "of the online course:"
+        paragraph_string_en_course = "{0}".format(self.long_course.decode('utf-8'))
+        width_string_en_1 = stringWidth(paragraph_string_en_1,
+                                        'OpenSans-Regular', 14) / mm
+        width_string_en_stu = stringWidth(paragraph_string_en_stu,
+                                          'OpenSans-Regular', 14) / mm
+        if self._use_unicode_font(student_name):
+            width_string_en_stu = stringWidth(paragraph_string_en_stu,
+                                              'Baoli-Regular', 20) / mm            
+        width_string_en_2 = stringWidth(paragraph_string_en_2,
+                                        'OpenSans-Regular', 14) / mm
+        width_string_en_3 = stringWidth(paragraph_string_en_3,
+                                        'OpenSans-Regular', 14) / mm
+
+        #This is to certify that Mr./Ms.
+        paragraph = Paragraph(paragraph_string_en_1, style_en)
         paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
         paragraph.drawOn(c, LEFT_INDENT * mm, 80 * mm)
 
 
+        paragraph = Paragraph(paragraph_string_en_stu, style_en)
+        if self._use_unicode_font(student_name):
+            paragraph = Paragraph(paragraph_string_en_stu, style)
+        paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
+        paragraph.drawOn(c, (LEFT_INDENT + width_string_en_1) * mm, 80 * mm)
+
+        #has successfully completed all requirements
+        paragraph = Paragraph(paragraph_string_en_2, style_en)
+        paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
+        paragraph.drawOn(c, (LEFT_INDENT + width_string_en_1 + width_string_en_stu) * mm, 80 * mm)
+
+        #of the online course:
+        paragraph = Paragraph(paragraph_string_en_3, style_en)
+        paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
+        paragraph.drawOn(c, LEFT_INDENT * mm, 70 * mm)
+
+        #
+        paragraph = Paragraph(paragraph_string_en_course, style_en)
+        paragraph.wrapOn(c, WIDTH * mm, HEIGHT * mm)
+        paragraph.drawOn(c, (LEFT_INDENT + width_string_en_3) * mm, 70 * mm)
 
         c.showPage()
         c.save()
